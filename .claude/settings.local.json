@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -o \"Operating System.zip\" -d \"OS_extracted\")",
+      "Bash(npm install:*)"
+    ]
+  }
+}
