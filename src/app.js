@@ -11,6 +11,7 @@ const maintenanceRouter = require('./routes/maintenance');
 const reflectionsRouter = require('./routes/reflections');
 const profileRouter = require('./routes/profile');
 const chatRouter = require('./routes/chat');
+const calendarRouter = require('./routes/calendar');
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use('/api/maintenance', maintenanceRouter);
 app.use('/api/reflections', reflectionsRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/calendar', calendarRouter);
 
 module.exports = app;
