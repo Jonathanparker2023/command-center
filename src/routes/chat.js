@@ -126,7 +126,8 @@ RULES:
 - When Jon describes a project, break it into ordered steps with time estimates
 - Keep responses concise and direct — no fluff
 - Always confirm when you've added or changed something in the calendar
-- Jon has ${context.active_projects.length} active projects — always be aware of all of them`;
+- Jon has ${context.active_projects.length} active projects — always be aware of all of them
+- You have web search — use it whenever Jon asks about current info, news, prices, weather, or anything that benefits from live data`;
 }
 
 // POST /api/chat
@@ -145,15 +146,17 @@ router.post('/', async (req, res) => {
     const context = await buildContext();
     const systemPrompt = buildSystemPrompt(context);
 
-    const isComplex = message.length > 120 || /plan|replan|review|insight|goal|project|week|priorit|schedul|calendar/i.test(message);
-    const model = isComplex ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
+    const model = 'claude-sonnet-4-6';
 
     // Agentic loop — Claude can call tools, we run them, then continue
     let response = await getClient().messages.create({
       model,
-      max_tokens: 1024,
+      max_tokens: 2048,
       system: systemPrompt,
-      tools: calendarTools,
+      tools: [
+        ...calendarTools,
+        { type: 'web_search_20250305', name: 'web_search' },
+      ],
       messages,
     });
 
@@ -185,7 +188,7 @@ router.post('/', async (req, res) => {
       totalTokens += response.usage.input_tokens + response.usage.output_tokens;
     }
 
-    const reply = response.content.find(b => b.type === 'text')?.text || '';
+    const reply = response.content.filter(b => b.type === 'text').map(b => b.text).join('') || '';
 
     await pool.query('INSERT INTO chat_messages (role, content) VALUES ($1, $2)', ['assistant', reply]);
 
@@ -203,7 +206,7 @@ router.post('/', async (req, res) => {
       ]
     );
 
-    res.json({ reply, model, tokens: totalTokens, tools_used: toolsUsed });
+    res.json({ reply, model: 'claude-sonnet-4-6', tokens: totalTokens, tools_used: toolsUsed });
   } catch (err) {
     console.error('Chat error:', err);
     res.status(500).json({ error: err.message });

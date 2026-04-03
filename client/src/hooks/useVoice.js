@@ -1,8 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
 
-const ELEVENLABS_VOICE_ID = '21m00Tcm4TlvDq8ikWAM' // Rachel — natural, calm
-const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
-
 export function useVoice({ onTranscript } = {}) {
   const [listening, setListening] = useState(false)
   const [speaking, setSpeaking] = useState(false)
@@ -36,7 +33,6 @@ export function useVoice({ onTranscript } = {}) {
   }, [])
 
   const speak = useCallback(async (text) => {
-    // Stop any current audio
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current = null
@@ -45,23 +41,13 @@ export function useVoice({ onTranscript } = {}) {
     setSpeaking(true)
 
     try {
-      const res = await fetch(
-        `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}/stream`,
-        {
-          method: 'POST',
-          headers: {
-            'xi-api-key': ELEVENLABS_API_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text,
-            model_id: 'eleven_turbo_v2',
-            voice_settings: { stability: 0.5, similarity_boost: 0.75, speed: 1.0 },
-          }),
-        }
-      )
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      })
 
-      if (!res.ok) throw new Error('ElevenLabs error')
+      if (!res.ok) throw new Error('TTS failed')
 
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
@@ -73,7 +59,10 @@ export function useVoice({ onTranscript } = {}) {
         URL.revokeObjectURL(url)
         audioRef.current = null
       }
-      audio.onerror = () => setSpeaking(false)
+      audio.onerror = (e) => {
+        console.error('Audio playback error:', e)
+        setSpeaking(false)
+      }
 
       await audio.play()
     } catch (err) {

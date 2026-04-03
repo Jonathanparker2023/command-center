@@ -13,6 +13,7 @@ const profileRouter = require('./routes/profile');
 const chatRouter = require('./routes/chat');
 const calendarRouter = require('./routes/calendar');
 const nowRouter = require('./routes/now');
+const ttsRouter = require('./routes/tts');
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.use('/api/profile', profileRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/calendar', calendarRouter);
 app.use('/api/now', nowRouter);
+app.use('/api/tts', ttsRouter);
 
 module.exports = app;
