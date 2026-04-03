@@ -45,6 +45,7 @@ async function buildContext() {
       energy_patterns: p.energy_patterns,
       meal_preferences: p.meal_preferences,
       fitness_goals: p.fitness_goals,
+      patterns: p.productivity_patterns || null,
     },
     active_goals: goals.rows,
     active_projects: projects.rows,
