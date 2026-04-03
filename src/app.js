@@ -12,6 +12,7 @@ const reflectionsRouter = require('./routes/reflections');
 const profileRouter = require('./routes/profile');
 const chatRouter = require('./routes/chat');
 const calendarRouter = require('./routes/calendar');
+const nowRouter = require('./routes/now');
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use('/api/reflections', reflectionsRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/calendar', calendarRouter);
+app.use('/api/now', nowRouter);
 
 module.exports = app;
