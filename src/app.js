@@ -10,6 +10,7 @@ const routinesRouter = require('./routes/routines');
 const maintenanceRouter = require('./routes/maintenance');
 const reflectionsRouter = require('./routes/reflections');
 const profileRouter = require('./routes/profile');
+const chatRouter = require('./routes/chat');
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.use('/api/routines', routinesRouter);
 app.use('/api/maintenance', maintenanceRouter);
 app.use('/api/reflections', reflectionsRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/chat', chatRouter);
 
 module.exports = app;
